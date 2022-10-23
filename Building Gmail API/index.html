@@ -1,27 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Website</title>
     <link rel="stylesheet" href="main.css">
+
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+   <style type="text/css">
+       html { height: 100% }
+       body { height: 100%; margin: 0; padding: 0 }
+       #map-canvas { height: 100% }
+   </style>
+   <script type="text/javascript"
+           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm8o4sZAjh-VxR8t6KAraVprTylMGHbEE"></script>
+   <script type="text/javascript">
+     var map;
+     function initialize() {
+       var mapOptions = {
+         center: new google.maps.LatLng(48.209331, 16.381302),
+         zoom: 4
+       };
+       map = new google.maps.Map(
+              document.getElementById("map-canvas"), mapOptions);
+     }
+     window.addEventListener('load', initialize);
+
+   </script>
+  
 </head>
 
-<body class="dark-theme">
-    <h1>Task List</h1>
-    <p id="msg">Current tasks:</p>
-    <u1>
-        <li class="list">Add visual styles</li>
-        <li class="list">Add light and dark themes</li>
-        <li>Enable switching the theme</li>
-    </u1>
-    <div>
-        <button class="btn">Dark</button>
-    </div>
-</body>
-<script src="app.js"></script>
-<noscript>You need to enable JavaScript to view the full site.</noscript>
+<body>
+    <div class = "hello">
+        <div class = "menu">
+            <ul>
+                <li>
+                    <img src="howl.png" class="awoo"
+                    width="100"
+                    length="100">
+                </li>
+                <li><p><a href = "https://emergency.uw.edu/" target="_blank" class = "signup-btn"><span>Alerts</span></a></p></li>
+            </ul>
+        </div>
+        
+        <div class = "banner">
+        
 
+            <div class = "app-text">
+                <h1>HOWL!<br>Keep Our <br>Students Safe! </h1>
+
+                <p>Our site utilizes the prexisting UW<br>Alerts system and creates a map  <br>which can help students avoid danger!</p>
+            </div>
+            <div class ="map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d11744.388169045858!2d-122.30749685428951!3d47.657108703483885!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1666500874360!5m2!1sen!2sus" width="480" height="360" align="right" float="right" style="border:0;" class="right" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+    
+</body>
 </html>

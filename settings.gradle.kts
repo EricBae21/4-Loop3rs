@@ -8,4 +8,5 @@
  * This project uses @Incubating APIs which are subject to change.
  */
 
-rootProject.name = "Building Gmail API"
+rootProject.name = "4-Loop3rs"
+include("app")

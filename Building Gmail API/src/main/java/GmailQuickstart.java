@@ -8,24 +8,20 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.GmailScopes;
-import com.google.api.services.gmail.model.Label;
-import com.google.api.services.gmail.model.ListLabelsResponse;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.google.api.services.gmail.model.*;
+import com.google.api.services.gmail.*;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.StringUtils;
 
 /* class to demonstrate use of Gmail list labels API */
 public class GmailQuickstart {
   /**
    * Application name.
    */
-  private static final String APPLICATION_NAME = "Gmail API Java Quickstart";
+  private static final String APPLICATION_NAME = "Gmail API Java Get Message";
   /**
    * Global instance of the JSON factory.
    */
@@ -35,11 +31,14 @@ public class GmailQuickstart {
    */
   private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
+
   /**
    * Global instance of the scopes required by this quickstart.
    * If modifying these scopes, delete your previously saved tokens/ folder.
    */
-  private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_LABELS);
+  //   private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_LABELS);
+  //private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_READONLY);
+  private static final List<String> SCOPES = Arrays.asList(GmailScopes.GMAIL_READONLY);
   private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
   /**
@@ -66,29 +65,46 @@ public class GmailQuickstart {
         .setAccessType("offline")
         .build();
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-    Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("use");
     //returns an authorized Credential object.
     return credential;
   }
 
-  public static void main(String... args) throws IOException, GeneralSecurityException {
-    // Build a new authorized API client service.
+  //public static void main(String... args) throws IOException, GeneralSecurityException {
+    public  GmailQuickstart() throws IOException, GeneralSecurityException {
+    
     final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-        .setApplicationName(APPLICATION_NAME)
-        .build();
-
-    // Print the labels in the user's account.
+      .setApplicationName(APPLICATION_NAME)
+      .build();
     String user = "me";
-    ListLabelsResponse listResponse = service.users().labels().list(user).execute();
-    List<Label> labels = listResponse.getLabels();
-    if (labels.isEmpty()) {
-      System.out.println("No labels found.");
-    } else {
-      System.out.println("Labels:");
-      for (Label label : labels) {
-        System.out.printf("- %s\n", label.getName());
-      }
+    
+    ListMessagesResponse messageResponse = service.users().messages().list(user).execute();
+    List<Message> messages = messageResponse.getMessages();
+
+    Message m = messages.get(messages.size()-1);
+    Message gmailMessage = service.users().messages().get(user, m.getId()).setFormat("full").execute();
+    String body = ("Payload: \n" + StringUtils.newStringUtf8(Base64.decodeBase64(gmailMessage.getPayload().getParts().get(0).getBody().getData())));
+
+    PrintStream output = new PrintStream("output.txt");
+    output.print(body);
+
+    /* 
+    // This would find the body for all gmail bodies in the account
+    int counter = 0;
+
+    for (Message m : messages) {
+      Message gmailMessage = service.users().messages().get(user, m.getId()).setFormat("full").execute();
+      //String body = gmailMessage.getPayload().getBody().getData();
+      // System.out.println(body);
+      System.out.println("Payload, " + StringUtils.newStringUtf8(Base64.decodeBase64(gmailMessage.getPayload().getParts().get(0).getBody().getData()) ));
+      // System.out.println(bodyTest);
+      // System.out.println("Payload2, " + gmailMessage.payload.parts[counter]);
+      
+      // System.out.println(StringUtils.newStringUtf8(Base64.decodeBase64(gmailMessage.getPayload().getBody().getData())));
+      counter++;
     }
+*/
+
   }
 }
