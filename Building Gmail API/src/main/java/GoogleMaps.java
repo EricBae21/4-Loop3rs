@@ -5,12 +5,14 @@ import com.teamdev.jxbrowser.engine.Engine;
 import com.teamdev.jxbrowser.engine.EngineOptions;
 import com.teamdev.jxbrowser.view.swing.BrowserView;
 import java.awt.BorderLayout;
+import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.util.*;
 import java.io.*;
+import java.nio.file.Paths;
 
 public class GoogleMaps {
 
@@ -86,7 +88,8 @@ public class GoogleMaps {
             frame.setSize(800, 500);
             frame.setVisible(true);
 
-            browser.navigation().loadUrl("index.html");
+            String in = GmailQuickstart.class.getResource("index.html").toString();
+            browser.navigation().loadUrl(in);
         });
     }
 }
